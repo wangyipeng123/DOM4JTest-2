@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * 利用DOM4J技术解析xml文件：需要导入DOM4J的jar包：技术只能在java下进行解析
+ * 在解析xml文件时建议使用这一种解析方式
  */
 public class DOM4JTest {
 
