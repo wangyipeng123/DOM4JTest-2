@@ -1,21 +1,23 @@
 package com.mingjiang.test;
 
-import org.dom4j.Attribute;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
+import org.dom4j.*;
+import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 
+import java.io.*;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * 利用DOM4J技术解析xml文件：需要导入DOM4J的jar包：技术只能在java下进行解析
- * 在解析xml文件时建议使用这一种解析方式
+ * 利用DOM4J技术解析xml文件：需要导入DOM4J的jar包
  */
 public class DOM4JTest {
 
-    public static void main(String[] args){
+    /**
+     * 利用DOM4j解析xml方法
+     */
+    private void parserXml(){
         //创建SAXReader的对象reader
         SAXReader reader = new SAXReader();
         try {
@@ -34,7 +36,6 @@ public class DOM4JTest {
                 for (Attribute attr : bookAttrs){
                     System.out.println("属性名："+attr.getName()+"---属性值："+attr.getValue());
                 }
-
                 //通过element对象的elementIterator方法获取迭代器
                 Iterator itt = book.elementIterator();
                 //遍历迭代器，获取book节点中的信息
@@ -44,13 +45,52 @@ public class DOM4JTest {
                     //获取每一个bookChild的节点名
                     System.out.println("节点名："+bookChild.getName()+"---节点值："+bookChild.getTextTrim());
                 }
-
-
-
             }
         } catch (DocumentException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 生成xml文件
+     */
+    private void createXML(){
+        //创建document对象，代表整个xml文档
+        Document document = DocumentHelper.createDocument();
+        //创建根节点
+        Element rss = document.addElement("rss");
+        //向rss节点中添加version属性
+        rss.addAttribute("version","2.0");
+        //根节点下添加子节点channel
+        Element channel = rss.addElement("channel");
+        //在channel节点下添加子节点title
+        Element title = channel.addElement("title");
+        //在title节点下添加文本内容
+        title.setText("国内最新新闻");
+        //设置生成xml文件的格式
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        //设置编码格式，默认的为utf-8
+//        format.setEncoding("GBK");
+        //创建一个文件,定义文件名
+        File file = new File("rssnews.xml");
+        //将生成xml文件，写入到文件中
+        XMLWriter writer = null;
+        try {
+            writer = new XMLWriter(new FileOutputStream(file),format);
+            //设置文件遇到特殊符号是否转义，默认转义为true
+            writer.setEscapeText(false);
+            writer.write(document);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args){
+        //创建DOM4JTest对象
+        DOM4JTest test = new DOM4JTest();
+//        test.parserXml();
+        test.createXML();
+
     }
 
 }
